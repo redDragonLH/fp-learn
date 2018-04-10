@@ -10,9 +10,9 @@ const _ = require('lodash');
  */
 
 /**
- * [description]
+ * memoize
  * @param  {[type]} f [description]
- * @return {[type]}   [description]
+ * @return {[function]}   [description]
  * 简单实现
  */
  var memoize = function(f) {
@@ -29,5 +29,6 @@ const _ = require('lodash');
  
  console.log(squareNumber(4));
  module.exports = {
-   squareNumber
+   squareNumber,
+   memoize
  }
