@@ -1,10 +1,10 @@
 {
-  "name": "fp-test",
+  "name": "fp-Learn",
   "version": "1.0.0",
   "description": "学习函数式编程",
   "main": "test.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test":  "mocha -R spec"
   },
   "keywords": [
     "webpack"
@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "babel-loader": "^7.1.2",
+    "should": "^13.2.1",
     "webpack": "^3.7.1",
     "webpack-dev-server": "^2.9.1"
   }
