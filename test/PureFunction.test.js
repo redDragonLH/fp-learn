@@ -1,5 +1,5 @@
 const should = require('should');
-const pf = require('../../unit/three/PureFunction.js');
+const pf = require('../unit/three/PureFunction.js');
 
 let squareNumber = pf.squareNumber;
 let memoize = pf.memoize;

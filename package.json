@@ -5,7 +5,7 @@
   "main": "test.js",
   "scripts": {
     "test": "mocha --recursive --colors -R spec",
-    "cover": "istanbul cover mocha --recursive --colors -R spec",
+    "cover": "istanbul cover node_modules/mocha/bin/_mocha --recursive",
     "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
   },
   "keywords": [
