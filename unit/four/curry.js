@@ -78,6 +78,10 @@ var censored = noVowels("*");
 
 censored("Chocolate Rain");
 // 'Ch*c*l*t* R**n'
+
+// 练习
+
+
 module.exports ={
   increment,
   addTen,
