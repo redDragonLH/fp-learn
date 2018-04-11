@@ -4,7 +4,9 @@
   "description": "学习函数式编程",
   "main": "test.js",
   "scripts": {
-    "test": "mocha --recursive -R spec" 
+    "test": "mocha --recursive --colors -R spec",
+    "cover": "istanbul cover mocha --recursive --colors -R spec",
+    "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
   },
   "keywords": [
     "webpack"
@@ -27,6 +29,8 @@
   },
   "devDependencies": {
     "babel-loader": "^7.1.2",
+    "coveralls": "^3.0.0",
+    "istanbul": "^0.4.5",
     "mocha": "^5.0.5",
     "should": "^13.2.1",
     "webpack": "^3.7.1",
