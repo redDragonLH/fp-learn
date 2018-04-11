@@ -27,7 +27,8 @@ const _ = require('lodash');
  
  let squareNumber  = memoize(function(x){ return x*x; });
  
- console.log(squareNumber(4));
+ // test
+squareNumber(4);
  module.exports = {
    squareNumber,
    memoize
