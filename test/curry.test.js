@@ -24,11 +24,11 @@ describe('第四章 柯里化', function(){
   });
   describe('match', function(){
     it('match return array', function() {
-      should(match(/\s+/g, "hello world")).be.array;
+      should(match(/\s+/g, 'hello world')).be.array;
     });
     
     it('hasSpaces return array', function() {
-      should(hasSpaces( "hello world")).be.array;
+      should(hasSpaces( 'hello world')).be.array;
     });
   });
   describe('replace', function(){
@@ -42,23 +42,26 @@ describe('第四章 柯里化', function(){
     });
     
     it('noVowels output string',function(){
-      should(noVowels("Chocolate Rain","*")).be.equal('*').be.string;
-    })
+      should(noVowels('Chocolate Rain','*')).be.equal('*').be.string;
+    });
     it('censored output string',function(){
-      should(censored("Chocolate Rain")).be.equal('Ch*c*l*t* R**n').be.string;
-    })
+      should(censored('Chocolate Rain')).be.equal('Ch*c*l*t* R**n').be.string;
+    });
   });
   describe('filter',function(){
     it('filter output array',function(){
-      should(filter(hasSpaces, ["tori_spelling", "tori amos"])).be.array;
+      should(filter(hasSpaces, ['tori_spelling', 'tori amos'])).be.array;
     });
     it('findSpaces output array', function(){
-      should(findSpaces(["tori_spelling", "tori amos"])[0]).be.equal('tori amos').be.string;
+      should(findSpaces(['tori_spelling', 'tori amos'])[0]).be.equal('tori amos').be.string;
     });
   });
   describe('map',function(){
     it('map output array',function(){
-      should(map(function(x){return x=== 1 ? true : false},[1,1,2])).be.array;
+      should(map(function(x){
+        return x === 1 ? true : false;
+      },
+      [1,1,2])).be.array;
     });
   });
 });

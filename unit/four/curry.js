@@ -1,4 +1,4 @@
-const curry = require('lodash').curry;
+const curry = require( 'lodash' ).curry;
 
 let add = function(x){
   return function(y){
@@ -39,7 +39,7 @@ let replace = curry(function(what, replacement, str) {
  */
 let filter = curry(function(f,ary) {
   return ary.filter(f);
-})
+});
 
 /**
  * [description]
@@ -49,7 +49,7 @@ let filter = curry(function(f,ary) {
  */
 let map = curry(function(f,ary) {
   return ary.map(f);
-})
+});
 
 /**
  * [hasSpaces description]
@@ -57,32 +57,32 @@ let map = curry(function(f,ary) {
  */
 let hasSpaces = match(/\s+/g);
 
-hasSpaces("hello world");
+hasSpaces('hello world');
 // [ ' ' ]
-hasSpaces("spaceless");
+hasSpaces('spaceless');
 // null
 
-filter(hasSpaces, ["tori_spelling", "tori amos"]);
+filter(hasSpaces, ['tori_spelling', 'tori amos']);
 // ["tori amos"]
 
 let findSpaces = filter(hasSpaces);
 // function(xs) { return xs.filter(function(x) { return x.match(/\s+/g) }) }
 
-findSpaces(["tori_spelling", "tori amos"]);
+findSpaces(['tori_spelling', 'tori amos']);
 // ["tori amos"]
 
 let noVowels = replace(/[aeiou]/ig);
 // function(replacement, x) { return x.replace(/[aeiou]/ig, replacement) }
-var censored = noVowels("*");
+var censored = noVowels('*');
 // function(x) { return x.replace(/[aeiou]/ig, "*") }
 
-censored("Chocolate Rain");
+censored('Chocolate Rain');
 // 'Ch*c*l*t* R**n'
 
 // 练习
 
 
-module.exports ={
+module.exports = {
   increment,
   addTen,
   match,
@@ -93,4 +93,4 @@ module.exports ={
   findSpaces,
   noVowels,
   censored
-}
+};
