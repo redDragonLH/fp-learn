@@ -16,7 +16,6 @@
     "quotes": [2, "single"],
     "semi": [2, "always"],
     "space-infix-ops": 2,
-    "eqeqeq": "off",
     "accessor-pairs": ["error", { "getWithoutSet": true, "setWithoutGet": true }], //强制get/set
     "block-scoped-var": "error",
     "eqeqeq": "error" // 强制全等全不等
