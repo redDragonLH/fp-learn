@@ -62,7 +62,7 @@ let reverse = reduce(function(acc, x){
  * 
  * @type {[type]}
  */
-let last =compose(head,reverse);
+let last = compose(head,reverse);
 
 last(['jumpkick', 'roundhouse', 'uppercut']);
 // console.log(last(['jumpkick', 'roundhouse', 'uppercut']));
