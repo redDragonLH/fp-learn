@@ -1,3 +1,5 @@
+/*global describe it*/
+
 const should = require('should');
 const pf = require('../unit/three/PureFunction.js');
 

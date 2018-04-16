@@ -3,7 +3,7 @@
   * @type {[type]}
   */
 
-const _ = require('lodash');
+// const _ = require('lodash');
 
 /**
  * 可缓存性

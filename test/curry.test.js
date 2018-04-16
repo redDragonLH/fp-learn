@@ -1,6 +1,8 @@
+/*global describe it*/
+
 const should = require('should');
 const locacurry = require('../unit/four/curry.js');
-const curry = require('lodash').curry;
+// const curry = require('lodash').curry;
 
 let increment = locacurry.increment;
 let addTen = locacurry.addTen;
