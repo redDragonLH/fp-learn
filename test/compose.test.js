@@ -42,5 +42,8 @@ describe('第五章 组合', function(){
   it('averageDollarValue return number', function() {
     should(composes.averageDollarValue(composes.CARS)).be.a.number;
   });
+  it('trace debug', function() {
+    should(composes.trace('tag',1)).be.a.number;
+  });
 });
 
