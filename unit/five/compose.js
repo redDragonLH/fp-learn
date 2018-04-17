@@ -148,5 +148,6 @@ module.exports = {
   nameOfFirstCar,
   add,
   _average,
-  averageDollarValue
+  averageDollarValue,
+  CARS
 };
