@@ -1,24 +1,25 @@
 const curry = require( 'lodash' ).curry;
 
-let add = function(x){
-  return function(y){
+let add = function( x ){
+  return function( y ){
     return x + y;
   };
 };
-var increment = add(1);
-var addTen = add(10);
+const ONE = 1;
+const TEN = 10;
+var increment = add( ONE );
+var addTen = add( TEN );
 
-
- // -----------------------------------------------------------------
+// -----------------------------------------------------------------
 /**
  * 返回包含空格的数组
  * @param  {[boolean]} what [description]
  * @param  {[string]} str  [description]
  * @return {[array]}      [description]
  */
-let match = curry(function(what,str) {
-  return str.match(what);
-}); 
+let match = curry( function( what, str ) {
+  return str.match( what );
+} ); 
 
 /**
  * 查找替换
@@ -27,9 +28,9 @@ let match = curry(function(what,str) {
  * @param  {[string]} str         [description]
  * @return {[string]}             [description]
  */
-let replace = curry(function(what, replacement, str) {
-  return str.replace(what, replacement);
-});
+let replace = curry( function( what, replacement, str ) {
+  return str.replace( what, replacement );
+} );
 
 /**
  * [description]
@@ -37,9 +38,9 @@ let replace = curry(function(what, replacement, str) {
  * @param  {[array]} ary [description]
  * @return {[array]}     [description]
  */
-let filter = curry(function(f,ary) {
-  return ary.filter(f);
-});
+let filter = curry( function( f, ary ) {
+  return ary.filter( f );
+} );
 
 /**
  * [description]
@@ -47,36 +48,36 @@ let filter = curry(function(f,ary) {
  * @param  {[array]} ary [description]
  * @return {[array]}     [description]
  */
-let map = curry(function(f,ary) {
-  return ary.map(f);
-});
+let map = curry( function( f, ary ) {
+  return ary.map( f );
+} );
 
 /**
  * [hasSpaces description]
  * @type {Boolean}
  */
-let hasSpaces = match(/\s+/g);
+let hasSpaces = match( /\s+/g );
 
-hasSpaces('hello world');
+hasSpaces( 'hello world' );
 // [ ' ' ]
-hasSpaces('spaceless');
+hasSpaces( 'spaceless' );
 // null
 
-filter(hasSpaces, ['tori_spelling', 'tori amos']);
+filter( hasSpaces, [ 'tori_spelling', 'tori amos' ] );
 // ["tori amos"]
 
-let findSpaces = filter(hasSpaces);
+let findSpaces = filter( hasSpaces );
 // function(xs) { return xs.filter(function(x) { return x.match(/\s+/g) }) }
 
-findSpaces(['tori_spelling', 'tori amos']);
+findSpaces( [ 'tori_spelling', 'tori amos' ] );
 // ["tori amos"]
 
-let noVowels = replace(/[aeiou]/ig);
+let noVowels = replace( /[aeiou]/ig );
 // function(replacement, x) { return x.replace(/[aeiou]/ig, replacement) }
-var censored = noVowels('*');
+var censored = noVowels( '*' );
 // function(x) { return x.replace(/[aeiou]/ig, "*") }
 
-censored('Chocolate Rain');
+censored( 'Chocolate Rain' );
 // 'Ch*c*l*t* R**n'
 
 // 练习
@@ -92,5 +93,5 @@ module.exports = {
   hasSpaces,
   findSpaces,
   noVowels,
-  censored
+  censored,
 };

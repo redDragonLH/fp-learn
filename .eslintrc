@@ -12,12 +12,21 @@
     "no-unused-vars": ["error", { "vars": "all", "args": "all", "ignoreRestSiblings": false }], //强制 var 
     "camelcase": 2,
     "curly": "error",
-    "brace-style": [2, "1tbs"],
+    "brace-style": ["error", "1tbs"],
     "quotes": [2, "single"],
     "semi": [2, "always"],
     "space-infix-ops": 2,
     "accessor-pairs": ["error", { "getWithoutSet": true, "setWithoutGet": true }], //强制get/set
     "block-scoped-var": "error",
-    "eqeqeq": "error" // 强制全等全不等
+    "eqeqeq": "error", // 强制全等全不等
+    "no-magic-numbers": ["error", { "ignore": [], "ignoreArrayIndexes": true }],  //禁止无意义数字
+    "no-redeclare": "error", //禁止多次声明同一变量
+    "array-bracket-spacing": ["error", "always"], //数组括号空格
+    "comma-dangle": ["error", "always-multiline"], //拖尾逗号
+    "eol-last": ["error", "always"],  //文件末尾保留一行空行
+    "func-call-spacing": ["error", "never"], //禁止函数标识符和其调用之间有空格
+    "indent": ["error", 2], //tab缩进
+    "new-cap": ["error", { "newIsCap": true }],  //调用 new 操作符时有首字母大小的函数。
+    "space-in-parens": ["error", "always"]  //圆括号内有空格
   }
 }
