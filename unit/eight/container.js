@@ -14,7 +14,6 @@ Container.of = function( x ) {
   return new Container( x ); 
 };
 
-console.log(THREE);
 Container.of( THREE );
 //=> Container(3)
 
