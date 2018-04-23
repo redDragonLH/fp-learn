@@ -54,3 +54,60 @@ functor 就是一个签了合约的接口,functor 是范畴学里的概念
     }
     
 Maybe 看起来跟 Container 非常类似，但是有一点不同：Maybe 会先检查自己的值是否为空，然后才调用传进来的函数。这样我们在使用 map 的时候就能避免恼人的空值了
+
+**Maybe 最常用在那些可能会无法成功返回结果的函数中**
+
+这种强制执行的空值检查能够把脆弱的应用升级为实实在在的、健壮的应用，这样的API保证了更加安全的软件
+
+    //  withdraw :: Number -> Account -> Maybe(Account)
+    var withdraw = curry(function(amount, account) {
+      return account.balance >= amount ?
+        Maybe.of({balance: account.balance - amount}) :
+        Maybe.of(null);
+    });
+
+    //  finishTransaction :: Account -> String
+    var finishTransaction = compose(remainingBalance, updateLedger); // <- 假定这两个函数已经在别处定义好了
+
+    //  getTwenty :: Account -> Maybe(String)
+    var getTwenty = compose(map(finishTransaction), withdraw(20));
+
+
+    getTwenty({ balance: 200.00});
+    // Maybe("Your balance is $180.00")
+
+    getTwenty({ balance: 10.00});
+    // Maybe(null)
+
+## 释放容器里的值
+
+任何事物都有一个最终尽头。那些会产生作用的函数，都要有一个结束，但是可能无法通过`return` 把输出传递到外部世界，必须要运行这样或那样的函数才能传递出去。
+
+`应用程序所做的工作就是获取、更改和保存数据直到不再需要它们`，对数据做这些操作的函数有可能被 `map` 调用,这样的话数据就可以不用离开它温暖舒适的容器
+
+如果我们想返回一个自定义的值然后还能继续执行后面的代码的话，是可以做到的；
+
+    //  maybe :: b -> (a -> b) -> Maybe a -> b
+    var maybe = curry(function(x, f, m) {
+      return m.isNothing() ? x : f(m.__value);
+    });
+    
+    //  getTwenty :: Account -> String
+    var getTwenty = compose(
+      maybe("You're broke!", finishTransaction), withdraw(20)
+    );
+    
+    getTwenty({ balance: 200.00});
+    // "Your balance is $180.00"
+
+    getTwenty({ balance: 10.00});
+    // "You're broke!"
+
+**空值检查大多数时候都能防止在代码逻辑上偷工减料，让我们脱离危险。**
+
+那就是 Maybe 的“真正”实现会把它分为两种类型：一种是非空值，另一种是空值。这种实现允许我们遵守 map 的 parametricity 特性，因此 null 和 undefined 能够依然被 map 调用，functor 里的值所需的那种普遍性条件也能得到满足。所以你会经常看到 Some(x) / None 或者 Just(x) / Nothing 这样的容器类型在做空值检查，而不是 Maybe。
+
+## “纯”错误处理
+
+throw/catch 并不十分“纯”。当一个错误抛出的时候，我们没有收到返回值，反而是得到了一个警告
+
