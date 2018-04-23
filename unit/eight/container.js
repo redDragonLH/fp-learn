@@ -1,12 +1,12 @@
 
-const {TOW,THREE,TEN} = require( '../../comm/number.js' );
+const {TOW,THREE,TEN,TWENTY} = require( '../../comm/number.js' );
 const {match} = require( '../four/curry.js' );
 const {add,compose} = require( '../five/compose.js' );
 const _ = require( 'ramda' );
 const curry = require( 'lodash' ).curry;
 //  map :: Functor f => (a -> b) -> f a -> f b
-const map = curry( function( f, any_functor_at_all ) {
-  return any_functor_at_all.map( f );
+const map = curry( function( f, anyFunctorAtAll ) {
+  return anyFunctorAtAll.map( f );
 } );
 
 /**
@@ -44,20 +44,20 @@ Maybe.of = function( x ) {
 };
 
 Maybe.prototype.isNothing = function( ) {
-  return (this._value === null || this._value === undefined );
+  return ( this._value === null || this._value === undefined );
 };
 
 Maybe.prototype.map = function ( f ) {
   return this.isNothing() ? Maybe.of( null ) : Maybe.of( f( this._value ) );
 };
 
-Maybe.of( "Malkovich Malkovich" ).map( match( /a/ig ) );
+Maybe.of( 'Malkovich Malkovich' ).map( match( /a/ig ) );
 //=> Maybe(['a', 'a'])
  
 Maybe.of( null ).map( match( /a/ig ) );
 //=> Maybe(null)
 
-Maybe.of( { name: "Dinah", age: TEN } ).map( _.prop( "age" ) ).map( add( TEN ) );
+Maybe.of( { name: 'Dinah', age: TEN } ).map( _.prop( 'age' ) ).map( add( TEN ) );
 //=> Maybe(24)
 
 /**
@@ -74,7 +74,7 @@ let streeName = compose( map( _.prop( 'street' ) ),safeHead, _.prop( 'addresses'
 streeName( {addresses: [] } );
 // Maybe(null)
 
-streeName( { addresses: [ { street: "Shady Ln.", number: 4201 } ] } );
+streeName( { addresses: [ { street: 'Shady Ln.', number: 4201 } ] } );
 // Maybe("Shady Ln.")
 
 // 明确返回一个 Maybe（null） 来表明失败
@@ -88,12 +88,12 @@ let remainingBalance = function(){
 };
 let updateLedger = function(){
   
-}
+};
 //  finishTransaction :: Account -> String
 let finishTransaction = compose( remainingBalance, updateLedger );
 
 //  getTwenty :: Account -> Maybe(String)
-let getTwenty = compose( map( finishTransaction ) , withdraw(20) );
+let getTwenty = compose( map( finishTransaction ) , withdraw( TWENTY ) );
 
 getTwenty( { balance: 200.00} );
 // Maybe("Your balance is $180.00")
@@ -108,7 +108,7 @@ var maybe = curry( function( x, f, m ) {
 
 //  getTwenty :: Account -> String
 var getTwenty_ = compose(
-  maybe( "You're broke!", finishTransaction ), withdraw( 20 )
+  maybe( 'You\'re broke!', finishTransaction ), withdraw( TWENTY )
 );
 
 
@@ -126,7 +126,7 @@ let Left = function( x ) {
 Left.of = function ( x ) {
   return new Left( x );
 };
-Left.prototype.map = function( f ) {
+Left.prototype.map = function() {
   return this;
 };
 
@@ -138,7 +138,7 @@ Right.of = function( x ) {
   return new Right( x );
 };
 
-Right.prototype.map = function( f ) {
-  return Right.of( f( this.__value ) );
+Right.prototype.map = function( fun ) {
+  return Right.of( fun( this.__value ) );
 };
 
