@@ -27,7 +27,7 @@ let TOW = 2;
 let THREE = 3;
 let TEN = 10;
 let TWENTY = 20;
-let TIME = 10
+let TIME = 10;
 let kfunction = function(){};
 describe( '第四章 柯里化', function(){
   describe( 'unit four start example', function(){
