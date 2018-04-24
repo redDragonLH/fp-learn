@@ -128,8 +128,9 @@ describe( '第四章 柯里化', function(){
       it( 'rafThrottle' ,function(){
         should( rafThrottle ).be.a.function;
       } );
-      let testrafThrottle = rafThrottle( kfunction );
       it( 'rafThrottle return function' ,function(){
+        let testrafThrottle = rafThrottle( kfunction );
+        testrafThrottle();
         should( testrafThrottle() ).be.a.function;
       } );
     } );
