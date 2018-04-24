@@ -14,6 +14,11 @@ let hasSpaces = locacurry.hasSpaces;
 let findSpaces = locacurry.findSpaces;
 let noVowels = locacurry.noVowels;
 let censored = locacurry.censored;
+let addEvent = locacurry.addEvent;
+let debounce = locacurry.debounce;
+let throttle = locacurry.throttle;
+let rafThrottle = locacurry.rafThrottle;
+let raFrame = locacurry.raFrame;
 
 let ONE = 1;
 let TOW = 2;
@@ -69,6 +74,23 @@ describe( '第四章 柯里化', function(){
         return x === ONE ? true : false;
       },
       [ ONE,ONE,TOW ] ) ).be.array;
+    } );
+  } );
+  describe( 'curry function', function () {
+    it( 'addEvent in node is undefined' ,function(){
+      should( addEvent ).be.a.undefined;
+    } );
+    it( 'debounce' ,function(){
+      should( debounce() ).be.a.function;
+    } );
+    it( 'throttle' ,function(){
+      should( throttle() ).be.a.function;
+    } );
+    it( 'rafThrottle' ,function(){
+      should( rafThrottle() ).be.a.function;
+    } );
+    it( 'raFrame' ,function(){
+      should( raFrame( function(){} ) ).be.a.function;
     } );
   } );
 } );

@@ -1,13 +1,11 @@
 const curry = require( 'lodash' ).curry;
-
+const {ONE,TEN,SIXTY,ONETHOUSAND} = require( '../../comm/number.js' );
 let window = global ? global : window;
 let add = function( x ){
   return function( y ){
     return x + y;
   };
 };
-const ONE = 1;
-const TEN = 10;
 let increment = add( ONE );
 let addTen = add( TEN );
 
@@ -110,6 +108,86 @@ let debounce = function ( fn, delay, isImmediate ) {
   };
 };
 
+// 节流 -------------
+// 节流也是将多个触发间隔接近的事件函数执行，合并成一次函数执行，并且在指定的时间内至少执行一次事件处理函数。
+// 节流实现原理跟防抖技术类似，但是比防抖多了一次函数执行判断
+
+/**
+ * [description]
+ * @param  {Function} fn   事件处理函数
+ * @param  {Number}   wait 延迟时间
+ * @return {Function}      事件处理函数
+ */
+let throttle = function( fn, wait ) {
+  let timer;
+  let previous;
+  let now;
+  let diff;
+  return function(){
+    let _args = [].slice.call( arguments );
+    let context = this;
+    // 储存当前时间戳
+    now = Date.now();
+    let _fn = function(){
+      // 储存上一次执行的时间戳
+      previous = Date.now();
+      timer = null;
+      fn.apply( context, _args );
+    };
+    
+    clearTimeout( timer );
+    
+    if ( previous !== undefined ) {
+      // 时间差
+      diff = now - previous;
+      if( diff >= wait ){
+        fn.apply( context, _args );
+        previous = now;
+      } else {
+        timer = setTimeout( _fn, wait );
+      }
+    } else {
+      _fn();
+    }
+  };
+};
+
+
+// 使用浏览器帧频刷新自动调用的方法(requestAnimationFrame)实现 节流
+
+// 解决 requestAnimationFrame 兼容问题
+let raFrame = window.requestAnimationFrame || 
+    window.webkitRequestAnimationFrame || 
+    window.mozRequestAnimationFrame || 
+    window.oRequestAnimationFrame ||  
+    window.msRequestAnimationFrame || 
+    function( callback ) {
+      window.setTimeout( callback, ONETHOUSAND / SIXTY );
+    };
+
+// 柯里化封装
+/**
+ * [description]
+ * @param  {Function} fn [description]
+ * @return {function}      [description]
+ */
+let rafThrottle = function( fn ) {
+  let isLocked;
+  return function(){
+    let context = this;
+    let _args = arguments;
+    
+    if( isLocked ) {
+      return;
+    }
+    
+    isLocked = true;
+    raFrame( function(){
+      isLocked = false;
+      fn.apply( context, _args );
+    } );
+  };
+};
 
 /**
  * [hasSpaces description]
@@ -155,4 +233,7 @@ module.exports = {
   censored,
   addEvent,
   debounce,
+  throttle,
+  rafThrottle,
+  raFrame,
 };
