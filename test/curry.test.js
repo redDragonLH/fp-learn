@@ -38,6 +38,7 @@ describe( '第四章 柯里化', function(){
       should( addTen( TEN ) ).be.equal( TWENTY );
     } );
   } );
+  
   describe( 'match', function(){
     it( 'match return array', function() {
       should( match( /\s+/g, 'hello world' ) ).be.array;
