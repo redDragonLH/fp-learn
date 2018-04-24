@@ -178,4 +178,98 @@ curry 的概念很简单：只传递给函数一部分参数来调用它，让�
 
 - bind方法改变this指向，却不会执行原函数，那么我们可利用柯里化延迟执行，参数复用和提前返回的特点，返回新函数，在新函数使用apply方法执行原函数
 
-https://mp.weixin.qq.com/s/urmGjNzAMYRunQAEMxipuA
+### 简单的bind方法封装，仅用于普通函数
+
+    if (!Function.prototype.bind) {
+      Function.prototype.bind = function(context) {
+          if(context.toString() !== "[object Object]" && context.toString() !== "[object Window]" ) {
+              throw TypeError("context is not a Object.")
+          }
+
+      var _this = this;
+      var args = [].slice.call(arguments, 1);
+
+      return function() {
+          var _args = [].slice.call(arguments);
+
+          _this.apply(context, _args.concat(args))
+      }
+    }
+    }
+
+### 复杂情况，（考虑Bind的任何用法）
+
+    if (!Function.prototype.bind) {
+       Function.prototype.bind = function(oThis) {
+         if (typeof this !== 'function') {
+           // closest thing possible to the ECMAScript 5
+           // internal IsCallable function
+           throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+         }
+
+       var aArgs   = Array.prototype.slice.call(arguments, 1),
+           fToBind = this,
+           fNOP    = function() {},
+           fBound  = function() {
+             return fToBind.apply(this instanceof fNOP
+                    ? this
+                    : oThis,
+                    // 获取调用时(fBound)的传参.bind 返回的函数入参往往是这么传递的
+                    aArgs.concat(Array.prototype.slice.call(arguments)));
+           };
+
+       // 维护原型关系
+       if (this.prototype) {
+         // Function.prototype doesn't have a prototype property
+         fNOP.prototype = this.prototype; 
+       }
+       fBound.prototype = new fNOP();
+
+       return fBound;
+      };
+    };
+
+要理解复杂的 bind 兼容方法,必须彻底理解四个基础知识
+
+- js的原型对象
+- 构造函数使用new操作符的过程
+- this的指向问题
+- 熟悉 bing 方法的使用场景
+
+### 柯里化函数封装
+
+    function createCurry(fn) {
+        if(typeof fn !== "function"){
+            throw TypeError("fn is not function.");
+        }
+        //复用第一个参数
+        var args = [].slice.call(arguments, 1);
+        //返回新函数
+        return function(){
+            //收集剩余参数
+            var _args = [].slice.call(arguments);
+            //返回结果
+            return fn.apply(this, args.concat(_args));
+        }
+    }
+
+使用柯里化特点
+
+- 复用第一个参数
+- 返回新函数
+- 收集剩余参数
+- 返回结果
+
+使用例子
+
+    //add(19)(10, 20, 30)，求该函数传递的参数和
+    var add = createCurry(function() {
+        //获取所有参数
+        var args = [].slice.call(arguments);
+
+        //返回累加结果
+        return args.reduce(function(accumulator, currentValue) {
+            return accumulator + currentValue
+        })
+    }, 19)
+    add(10, 20, 30);    //79
