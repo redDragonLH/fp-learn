@@ -200,6 +200,26 @@ let rafThrottle = function( fn ) {
 };
 
 /**
+ * [createCurry description]
+ * @param  {Function} fn [description]
+ * @return {Function}      [description]
+ */
+function createCurry ( fn ){
+  if( typeof fn !== 'function' ) {
+    throw Error( 'fn is not function' );
+  }
+  // 复用第一个参数
+  let args = [].slice.call( arguments, ONE );
+  // 返回新函数
+  return function(){
+    // 收集剩余参数
+    let _args = [].slice.call( arguments );
+    // 返回结果
+    return fn.apply( this,args.comcat( _args ) );
+  };
+}
+
+/**
  * [hasSpaces description]
  * @type {Boolean}
  */
@@ -247,4 +267,5 @@ module.exports = {
   rafThrottle,
   raFrame,
   iEaddEvent,
+  createCurry,
 };
