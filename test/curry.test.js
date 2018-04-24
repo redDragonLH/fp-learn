@@ -1,9 +1,11 @@
 /*global describe it*/
-
+/*eslint no-unused-vars: ["error", { "argsIgnorePattern": "^win" }]*/
 const should = require( 'should' );
 const locacurry = require( '../unit/four/curry.js' );
 // const curry = require('lodash').curry;
-
+const Window = require( 'window' );
+const window = new Window();
+const {ONETHOUSAND} = require( '../comm/number.js' );
 let increment = locacurry.increment;
 let addTen = locacurry.addTen;
 let match = locacurry.match;
@@ -25,6 +27,7 @@ let TOW = 2;
 let THREE = 3;
 let TEN = 10;
 let TWENTY = 20;
+let kfunction = function(){};
 describe( '第四章 柯里化', function(){
   describe( 'unit four start example', function(){
     it( 'increment add 2 equal 3', function(){
@@ -77,17 +80,46 @@ describe( '第四章 柯里化', function(){
     } );
   } );
   describe( 'curry function', function () {
-    it( 'addEvent in node is undefined' ,function(){
-      should( addEvent ).be.a.undefined;
+    describe( 'addEvent', function () {
+      let div = window.document.createElement( 'div' );
+      it( 'addEvent in node is undefined' ,function(){
+        should( addEvent ).be.a.function;
+      } );
+      it( 'addEvent' ,function(){
+        should( addEvent( div, 'click', function(){},false ) ).be.a.undefined;
+      } );
+      let oldaddEventListener = window.addEventListener;
+      window.addEventListener = null;
+      window.attachEvent = true;
+      it( 'attachEvent' ,function(){
+        should( addEvent( div, 'click', function(){} ) ).be.a.undefined;
+      } );
+      window.addEventListener = oldaddEventListener;
+      window.attachEvent = null;
     } );
-    it( 'debounce' ,function(){
-      should( debounce() ).be.a.function;
+    describe( 'debounce', function () {
+      it( 'debounce' ,function(){
+        should( debounce ).be.a.function;
+      } );
+      it( 'debounce return function' ,function(){
+        should( debounce( kfunction, ONETHOUSAND, false ) ).be.a.function;
+      } );
     } );
-    it( 'throttle' ,function(){
-      should( throttle() ).be.a.function;
+    describe( 'throttle', function () {
+      it( 'throttle' ,function(){
+        should( throttle ).be.a.function;
+      } );
+      it( 'throttle return function' ,function(){
+        should( throttle( kfunction, ONETHOUSAND ) ).be.a.function;
+      } );
     } );
-    it( 'rafThrottle' ,function(){
-      should( rafThrottle() ).be.a.function;
+    describe( 'rafThrottle', function () {
+      it( 'rafThrottle' ,function(){
+        should( rafThrottle ).be.a.function;
+      } );
+      it( 'rafThrottle return function' ,function(){
+        should( rafThrottle( kfunction ) ).be.a.function;
+      } );
     } );
     it( 'raFrame' ,function(){
       should( raFrame( function(){} ) ).be.a.function;

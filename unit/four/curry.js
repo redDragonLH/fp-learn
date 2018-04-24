@@ -1,6 +1,7 @@
 const curry = require( 'lodash' ).curry;
 const {ONE,TEN,SIXTY,ONETHOUSAND} = require( '../../comm/number.js' );
-let window = global ? global : window;
+const Window = require( 'window' );
+const window = new Window();
 let add = function( x ){
   return function( y ){
     return x + y;
@@ -57,7 +58,6 @@ let map = curry( function( f, ary ) {
  * 事件监听
  * @return {function} 适用于当前环境的事件监听函数
  */
-
 let addEvent = ( function() {
   if( window.addEventListener ) {
     return function( ele,type,fn,isCapture ) {
@@ -69,7 +69,6 @@ let addEvent = ( function() {
     };
   }
 } )();
-
 // 防抖-------
 // 针对高频事件，防抖就是将多个触发间隔接近的事件函数指向，合并成一次函数执行
 
@@ -162,7 +161,7 @@ let raFrame = window.requestAnimationFrame ||
     window.oRequestAnimationFrame ||  
     window.msRequestAnimationFrame || 
     function( callback ) {
-      window.setTimeout( callback, ONETHOUSAND / SIXTY );
+      setTimeout( callback, ONETHOUSAND / SIXTY );
     };
 
 // 柯里化封装

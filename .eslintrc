@@ -9,7 +9,7 @@
   },
   "root": true,
   "rules": {
-    "no-unused-vars": ["error", { "vars": "all", "args": "all", "ignoreRestSiblings": false }], //强制 var 
+    "no-unused-vars": ["error", { "vars": "all", "args": "all", "ignoreRestSiblings": false ,"argsIgnorePattern": "window" }], //强制 var 
     "camelcase": 2,
     "curly": "error",
     "brace-style": ["error", "1tbs"],
