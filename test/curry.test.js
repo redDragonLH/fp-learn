@@ -5,7 +5,7 @@ const locacurry = require( '../unit/four/curry.js' );
 // const curry = require('lodash').curry;
 const Window = require( 'window' );
 const window = new Window();
-const {ONETHOUSAND} = require( '../comm/number.js' );
+const {ONE,TOW,THREE,TEN,TWENTY,ONETHOUSAND} = require( '../comm/number.js' );
 let increment = locacurry.increment;
 let addTen = locacurry.addTen;
 let match = locacurry.match;
@@ -21,12 +21,7 @@ let debounce = locacurry.debounce;
 let throttle = locacurry.throttle;
 let rafThrottle = locacurry.rafThrottle;
 let raFrame = locacurry.raFrame;
-
-let ONE = 1;
-let TOW = 2;
-let THREE = 3;
-let TEN = 10;
-let TWENTY = 20;
+let iEaddEvent = locacurry.iEaddEvent;
 let TIME = 10;
 let kfunction = function(){};
 describe( '第四章 柯里化', function(){
@@ -90,13 +85,8 @@ describe( '第四章 柯里化', function(){
       it( 'addEvent' ,function(){
         should( addEvent( div, 'click', function(){},false ) ).be.a.undefined;
       } );
-      let oldaddEventListener = window.addEventListener;
-      it( 'attachEvent' ,function(){
-        window.addEventListener = null;
-        window.attachEvent = true;
-        should( addEvent( div, 'click', function(){} ) ).be.a.undefined;
-        window.addEventListener = oldaddEventListener;
-        window.attachEvent = null;
+      it( 'IE attachEvent' ,function(){
+        should( iEaddEvent( div, 'click', function(){} ) ).be.a.undefined;
       } );
     } );
     describe( 'debounce', function () {

@@ -69,6 +69,17 @@ let addEvent = ( function() {
     };
   }
 } )();
+// ie 环境
+
+let iEaddEvent = ( function(){
+  let oldaddEventListener = window.addEventListener;
+  window.addEventListener = null;
+  window.attachEvent = true;
+  let attachEvent = addEvent;
+  window.addEventListener = oldaddEventListener;
+  window.attachEvent = null;
+  return attachEvent;
+} )();
 // 防抖-------
 // 针对高频事件，防抖就是将多个触发间隔接近的事件函数指向，合并成一次函数执行
 
@@ -235,4 +246,5 @@ module.exports = {
   throttle,
   rafThrottle,
   raFrame,
+  iEaddEvent,
 };
