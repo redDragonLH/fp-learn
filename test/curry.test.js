@@ -116,11 +116,11 @@ describe( '第四章 柯里化', function(){
       it( 'throttle' ,function(){
         should( throttle ).be.a.function;
       } );
-      let testthrottle = throttle( kfunction, TIME );
       it( 'throttle return function' ,function(){
-        throttle( kfunction, TIME );
-        throttle( kfunction, TIME );
-        throttle( kfunction, TIME );
+        let testthrottle = throttle( kfunction, TIME );
+        testthrottle( kfunction, TIME );
+        testthrottle( kfunction, TIME );
+        testthrottle( kfunction, TIME );
         should( testthrottle() ).be.a.function;
       } );
     } );
