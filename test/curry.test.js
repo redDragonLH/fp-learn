@@ -101,16 +101,18 @@ describe( '第四章 柯里化', function(){
       it( 'debounce' ,function(){
         should( debounce ).be.a.function;
       } );
+      let testdebounce = debounce( kfunction, ONETHOUSAND, false );
       it( 'debounce return function' ,function(){
-        should( debounce( kfunction, ONETHOUSAND, false ) ).be.a.function;
+        should( testdebounce() ).be.a.function;
       } );
     } );
     describe( 'throttle', function () {
       it( 'throttle' ,function(){
         should( throttle ).be.a.function;
       } );
+      let testthrottle = throttle( kfunction, ONETHOUSAND );
       it( 'throttle return function' ,function(){
-        should( throttle( kfunction, ONETHOUSAND ) ).be.a.function;
+        should( testthrottle() ).be.a.function;
       } );
     } );
     describe( 'rafThrottle', function () {
