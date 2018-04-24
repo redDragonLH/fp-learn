@@ -27,6 +27,7 @@ let TOW = 2;
 let THREE = 3;
 let TEN = 10;
 let TWENTY = 20;
+let TIME = 10
 let kfunction = function(){};
 describe( '第四章 柯里化', function(){
   describe( 'unit four start example', function(){
@@ -89,13 +90,13 @@ describe( '第四章 柯里化', function(){
         should( addEvent( div, 'click', function(){},false ) ).be.a.undefined;
       } );
       let oldaddEventListener = window.addEventListener;
-      window.addEventListener = null;
-      window.attachEvent = true;
       it( 'attachEvent' ,function(){
+        window.addEventListener = null;
+        window.attachEvent = true;
         should( addEvent( div, 'click', function(){} ) ).be.a.undefined;
+        window.addEventListener = oldaddEventListener;
+        window.attachEvent = null;
       } );
-      window.addEventListener = oldaddEventListener;
-      window.attachEvent = null;
     } );
     describe( 'debounce', function () {
       it( 'debounce' ,function(){
@@ -105,13 +106,20 @@ describe( '第四章 柯里化', function(){
       it( 'debounce return function' ,function(){
         should( testdebounce() ).be.a.function;
       } );
+      let test2debounce = debounce( kfunction, ONETHOUSAND, true );
+      it( 'debounce return function' ,function(){
+        should( test2debounce() ).be.a.function;
+      } );
     } );
     describe( 'throttle', function () {
       it( 'throttle' ,function(){
         should( throttle ).be.a.function;
       } );
-      let testthrottle = throttle( kfunction, ONETHOUSAND );
+      let testthrottle = throttle( kfunction, TIME );
       it( 'throttle return function' ,function(){
+        throttle( kfunction, TIME );
+        throttle( kfunction, TIME );
+        throttle( kfunction, TIME );
         should( testthrottle() ).be.a.function;
       } );
     } );
@@ -119,8 +127,9 @@ describe( '第四章 柯里化', function(){
       it( 'rafThrottle' ,function(){
         should( rafThrottle ).be.a.function;
       } );
+      let testrafThrottle = rafThrottle( kfunction );
       it( 'rafThrottle return function' ,function(){
-        should( rafThrottle( kfunction ) ).be.a.function;
+        should( testrafThrottle() ).be.a.function;
       } );
     } );
     it( 'raFrame' ,function(){

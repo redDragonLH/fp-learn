@@ -59,6 +59,7 @@ let map = curry( function( f, ary ) {
  * @return {function} 适用于当前环境的事件监听函数
  */
 let addEvent = ( function() {
+  console.log(window.addEventListener);
   if( window.addEventListener ) {
     return function( ele,type,fn,isCapture ) {
       ele.addEventListener( type, fn, isCapture );
