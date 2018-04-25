@@ -4,6 +4,9 @@ const {match} = require( '../four/curry.js' );
 const {add,compose} = require( '../five/compose.js' );
 const _ = require( 'ramda' );
 const curry = require( 'lodash' ).curry;
+const moment = require('moment'); //日期插件
+
+
 //  map :: Functor f => (a -> b) -> f a -> f b
 const map = curry( function( f, anyFunctorAtAll ) {
   return anyFunctorAtAll.map( f );
@@ -120,25 +123,45 @@ getTwenty_( { balance: 10.00 } );
 
 // 错误处理
 
-let Left = function( x ) {
-  this._value = x;
-};
-Left.of = function ( x ) {
-  return new Left( x );
-};
-Left.prototype.map = function() {
-  return this;
-};
+class Either {
+  static of(x) {
+    return new Right(x);
+  }
 
-let Right = function( x ){
-  this._value = x;
-};
+  constructor(x) {
+    this.$value = x;
+  }
+}
 
-Right.of = function( x ) {
-  return new Right( x );
-};
+class Left extends Either {
+  map(f) {
+    return this;
+  }
+  inspect() {
+    return `Left(${this.$value})`;
+  }
+}
+class Right extends Either {
+  map(f) {
+    return Either.of(f(this.$value));
+  }
+  inspect() {
+    return `Right(${this.$value})`;
+  }
+}
+const left = x => new Left(x);
+// getAge :: Date -> User -> Either(String, Number)
+const getAge = curry((now, user) => {
+  const birthDate = moment(user.birthDate, 'YYYY-MM-DD');
 
-Right.prototype.map = function( fun ) {
-  return Right.of( fun( this.__value ) );
-};
+  return birthDate.isValid()
+    ? Either.of(now.diff(birthDate, 'years'))
+    : left('Birth date could not be parsed');
+});
+
+getAge(moment(), { birthDate: '2005-12-12' });
+// Right(12)
+
+getAge(moment(), { birthDate: 'July 4, 2001' });
+// Left('Birth date could not be parsed')
 
