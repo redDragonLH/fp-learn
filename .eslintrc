@@ -27,6 +27,6 @@
     "func-call-spacing": ["error", "never"], //禁止函数标识符和其调用之间有空格
     "indent": ["error", 2], //tab缩进
     "new-cap": ["error", { "newIsCap": true }],  //调用 new 操作符时有首字母大小的函数。
-    "space-in-parens": ["error", "always"]  //圆括号内有空格
+    "space-in-parens": ["error", "always"],  //圆括号内有空格
   }
 }

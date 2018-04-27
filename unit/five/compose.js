@@ -130,7 +130,10 @@ let _average = function( xs ) {
 //   var dollar_values = map(function(c) { return c.dollar_value; }, cars);
 //   return _average(dollar_values);
 // };
-
+// 
+let id = function( x ){ 
+  return x; 
+};
 var averageDollarValue = _.compose( _average, _.map( _.prop( 'dollarValue' ) ) );
 averageDollarValue( CARS );
 
@@ -151,4 +154,5 @@ module.exports = {
   _average,
   averageDollarValue,
   CARS,
+  id,
 };

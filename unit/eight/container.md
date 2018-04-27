@@ -111,3 +111,43 @@ Maybe 看起来跟 Container 非常类似，但是有一点不同：Maybe 会先
 
 throw/catch 并不十分“纯”。当一个错误抛出的时候，我们没有收到返回值，反而是得到了一个警告
 
+
+either 接受两个函数（而不是一个）和一个静态值为参数。这两个函数的返回值类型一致：
+
+    // either :: (a->c)-><b -> c> -> Either a b -> c
+    const either = curry((f, g, e) => {
+      let result;
+      
+      switch (e.constructor) {
+        case Left:
+          result = f(e.$value);
+          break;
+        case Right:
+          result = g(e.$value);
+          break;
+        // No Default;
+      }
+      return result;
+    })
+<!--  -->
+
+#### 拿到容器内的数据
+
+    Class IO {
+      static of( x ) {
+        return new IO( ()=>x );
+      }
+      constructor( fn ) {
+        this.$value = fn ;
+      }
+      map( fn ){
+        return new IO( compose( fn, this.$value ) );
+      }
+      inspect(){
+        return `IO( ${inspect( this.$value )})`;
+      }
+    }
+
+`IO` 的 `_value` 总是一个函数,`IO` 把非纯执行动作（impure action）捕获到包裹函数里，目的是延迟执行这个非纯动作。就这一点而言，我们认为 IO 包含的是被包裹的执行动作的返回值，而不是包裹函数本身。这在 of 函数里很明显：`IO(function(){ return x })`` 仅仅是为了延迟执行，其实我们得到的是 `IO(x)`。
+
+  let io_window = new IO( () => window );

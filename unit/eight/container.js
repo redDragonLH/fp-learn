@@ -1,10 +1,33 @@
-
-const {TOW,THREE,TEN,TWENTY} = require( '../../comm/number.js' );
+/*eslint  */
+const {ONE,TOW,THREE,TEN,TWENTY} = require( '../../comm/number.js' );
 const {match} = require( '../four/curry.js' );
-const {add,compose} = require( '../five/compose.js' );
+const {add,id} = require( '../five/compose.js' );
 const _ = require( 'ramda' );
-const curry = require( 'lodash' ).curry;
+const compose = require( 'ramda' ).compose;
+const curry = require( 'ramda' ).curry;
+const concat = require( 'ramda' ).concat;
+const prop = require( 'ramda' ).prop;
+const split = require( 'ramda' ).split;
+
 const moment = require( 'moment' ); //日期插件
+
+const Window = require( 'window' );
+ 
+const window = new Window();
+
+function inspect ( x ) {
+  return ( typeof x === 'function' ) ? inspectFn( x ) : inspectArgs( x );
+}
+
+function inspectFn( f ) {
+  return ( f.name ) ? f.name : f.toString();
+}
+
+function inspectArgs( args ) {
+  return args.reduce( function( acc, x ){
+    return acc += inspect( x );
+  }, '(' ) + ')';
+}
 
 
 //  map :: Functor f => (a -> b) -> f a -> f b
@@ -165,3 +188,58 @@ getAge( moment(), {  birthDate: '2005-12-12' } );
 getAge( moment(), { birthDate: 'July 4, 2001' } );
 // Left('Birth date could not be parsed')
 
+// fortune :: Number -> String
+const fortune = compose( concat( 'If you survive, you will be ' ), toString, add( ONE ) );
+
+// either :: (a->c) -> (b->c) -> Either a b -> c
+const either = curry( ( f, g, e ) =>{
+  let result;
+  
+  switch ( e.constructor ) {
+  case Left:
+    result = f( e.$value );
+    break;
+  case Right:
+    result = g( e.$value );
+    break;
+  }
+  
+  return result;
+} );
+
+// consoles :: User ->
+const consoles = compose( either( id, fortune ),getAge( moment() ) );
+consoles( {birthDate:'2005-12-12'} );
+consoles( {birthdate: 'balloons!'} );
+
+// -----------------------------------------------------
+
+// getFromStorage :: String -> (_ -> String)
+// const getFromStorage = key => () => window.localStorage[key];
+
+class IO {
+  static of( x ) {
+    return new IO( () => x );
+  }
+
+  constructor( fn ) {
+    this.$value = fn;  // 可以直接使用 实例.$value()运行获取内部数据
+  }
+
+  map( fn ) {
+    return new IO( compose( fn, this.$value ) );
+  }
+
+  inspect() {
+    return `IO( ${ inspect( this.$value ) } )`;
+  }
+}
+
+// iowindow :: IO iowindow
+const ioWindow = new IO( () => window );
+
+ioWindow.map( win => win.innerWidth );
+
+// window.location.href = 'http:localhost:8000/blog/posts';
+
+ioWindow.map( prop( 'location' ) ).map( prop( 'href' ) ).map( split( '/' ) );
