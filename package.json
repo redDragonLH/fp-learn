@@ -10,6 +10,12 @@
     "lint": "eslint unit test",
     "after": "npm run lint && npm run test"
   },
+  "husky": {
+    "hooks": {
+      "pre-add": "npm after",
+      "pre-commit": "npm run after"
+    }
+  },
   "keywords": [
     "webpack"
   ],
@@ -34,6 +40,7 @@
     "babel-loader": "^7.1.2",
     "coveralls": "^3.0.0",
     "eslint": "^4.19.1",
+    "husky": "^1.0.0-rc.2",
     "istanbul": "^0.4.5",
     "mocha": "^5.0.5",
     "moment": "^2.22.1",
