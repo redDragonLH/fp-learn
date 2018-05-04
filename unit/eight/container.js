@@ -1,13 +1,14 @@
 /*eslint  */
 const {ONE,TOW,THREE,TEN,TWENTY} = require( '../../comm/number.js' );
-const {match} = require( '../four/curry.js' );
-const {add,id} = require( '../five/compose.js' );
+const {match,filter} = require( '../four/curry.js' );
+const {add,id,last,head} = require( '../five/compose.js' );
 const _ = require( 'ramda' );
 const compose = require( 'ramda' ).compose;
 const curry = require( 'ramda' ).curry;
 const concat = require( 'ramda' ).concat;
 const prop = require( 'ramda' ).prop;
 const split = require( 'ramda' ).split;
+const eq = require( 'ramda' ).split;
 
 const moment = require( 'moment' ); //日期插件
 
@@ -243,3 +244,33 @@ ioWindow.map( win => win.innerWidth );
 // window.location.href = 'http:localhost:8000/blog/posts';
 
 ioWindow.map( prop( 'location' ) ).map( prop( 'href' ) ).map( split( '/' ) );
+
+// url :: IO String
+let url = new IO( () => window.location.href );
+
+// toPairs :: String -> [[String]]
+let toPairs = compose( map( split( '=' ) ), split( '&' ) );
+
+// params :: String -> [[String]]
+let params = compose( toPairs, last, split( '?' ) );
+
+// findParam :: String -> IO Maybe [String]
+const findParam = key => map( compose( Maybe.of, filter( compose( eq( key ), head ) ), params ), url );
+
+// run it by calling $value()!
+findParam( 'searchTerm' ).$value();   // 运行$value函数
+// Just([['searchTerm', 'wafflehouse']])
+
+//  -------------------------------------------------------------------------------------------------------
+// 异步任务
+//  -------------------------------------------------------------------------------------------------------
+
+let fs = require( 'fs' );
+let Task = require( 'folktale' ).Data.Task;
+
+// readFile :: String -> Task(Error,JSON)
+let readFile = filename => new Task( ( reject, result ) => {
+  fs.readFile( filename, 'utf-8', ( err, data ) => ( err ? reject( err ) : result( data ) ) );
+} );
+
+readFile( 'metamorphosis' ).map( split( '\n' ) ).map( head );
