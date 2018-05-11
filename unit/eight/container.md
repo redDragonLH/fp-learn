@@ -151,3 +151,77 @@ either 接受两个函数（而不是一个）和一个静态值为参数。这�
 `IO` 的 `_value` 总是一个函数,`IO` 把非纯执行动作（impure action）捕获到包裹函数里，目的是延迟执行这个非纯动作。就这一点而言，我们认为 IO 包含的是被包裹的执行动作的返回值，而不是包裹函数本身。这在 of 函数里很明显：`IO(function(){ return x })`` 仅仅是为了延迟执行，其实我们得到的是 `IO(x)`。
 
   let io_window = new IO( () => window );
+  
+## 王老先生有作用。。。。
+
+    //  getFromStorage :: String -> (_ -> String)
+    var getFromStorage = function(key) {
+      return function() {
+        return localStorage[key];
+      }
+    }
+
+`io`
+
+    class IO{
+      static of(x){
+        return new IO( () => X ); /返回一个新的 IO 
+      }
+      constructor( fn ) { // 初始化函数
+        this.$value = fn;  // 内部属性__value 等于 f(函数) 
+      }
+      map( fn ) {  // 组合一个函数与内部的value方法，返回一个新的 IO
+        return new IO(compose(fn,this.$value));
+      }
+      inspect(){
+        return `IO(${inspect(this.$value)})`;
+      }
+    };
+
+  
+`IO` 跟之前的 `functor` 不同的地方在于，它的` __value` 总是一个函数
+
+`IO` 把非纯执行动作（impure action ） 捕获到包裹函数里，目的是延迟执行这个非纯动作。
+`IO` 包含的是被包裹的执行动作的返回值，而不是包裹函数本身。这在 `of` 函数里面很明显 ： `IO(function(){return x})` 仅仅是为了延迟执行，其实我们得到的是`IO(X)`
+
+使用实例
+
+    // io_window :: IO window
+    let io_window = new IO( () => window );
+    
+    io_window.map( win => win.innerWidth );
+    
+    io_window.map( _.prop( 'location' ).map( _.prop( 'href' ) ).map(split('/')) );
+    
+    // $ :: String -> IO [DOM]
+    let $ = (selector) => return new IO( ()=> document.querySelectorAll( selector ) );
+    
+调用IO ，获取数据
+    ////// 纯代码库: lib/params.js ///////
+
+    //  url :: IO String
+    var url = new IO(function() { return window.location.href; });
+
+    //  toPairs =  String -> [[String]]
+    var toPairs = compose(map(split('=')), split('&'));
+
+    //  params :: String -> [[String]]
+    var params = compose(toPairs, last, split('?'));
+
+    //  findParam :: String -> IO Maybe [String]
+    var findParam = function(key) {
+      return map(compose(Maybe.of, filter(compose(eq(key), head)), params), url);
+    };
+
+    ////// 非纯调用代码: main.js ///////
+
+    // 调用 __value() 来运行它！
+    findParam("searchTerm").__value();
+    // Maybe(['searchTerm', 'wafflehouse'])
+    
+把 url 包裹在一个 IO 里，然后把这头野兽传给了调用者；一双手保持的非常干净。你可能也注意到了，我们把容器也“压栈”了，要知道创建一个 IO(Maybe([x])) 没有任何不合理的地方。我们这个“栈”有三层 functor（Array 是最有资格成为 mappable 的容器类型）
+
+## 异步任务
+`跟 IO 在精神上相似，但是用法上又千差万别`
+
+
