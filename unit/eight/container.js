@@ -266,9 +266,9 @@ findParam( 'searchTerm' ).$value();   // 运行$value函数
 //  -------------------------------------------------------------------------------------------------------
 
 let fs = require( 'fs' );
-let Task = require( 'folktale' ).Data;
+let {task} = require( 'folktale/concurrency/task' );
 // readFile :: String -> Task(Error,JSON)
-let readFile = filename => new Task( ( reject, result ) => {
+let readFile = filename => task( ( reject, result ) => {
   fs.readFile( filename, 'utf-8', ( err, data ) => ( err ? reject( err ) : result( data ) ) );
 } );
 
