@@ -273,3 +273,10 @@ let readFile = filename => task( ( reject, result ) => {
 } );
 
 readFile( 'metamorphosis' ).map( split( '\n' ) ).map( head );
+
+module.exports = {
+  IO,
+  Maybe,
+  task,
+  Either,
+};
