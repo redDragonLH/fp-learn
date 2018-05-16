@@ -1,3 +1,4 @@
+const ZROE = 0;
 const ONE = 1;
 const TOW = 2;
 const THREE = 3;

@@ -12,7 +12,6 @@
   },
   "husky": {
     "hooks": {
-      "pre-add": "npm after",
       "pre-commit": "npm run after"
     }
   },
