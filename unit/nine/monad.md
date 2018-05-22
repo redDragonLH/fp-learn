@@ -130,3 +130,62 @@ IO等的 `of` 方法不是用来避免使用 `new` 关键字的，而是用来�
 
 总是在紧跟着 map 的后面调用 join。让我们把这个行为抽象到一个叫做 chain 的函数里。
 
+      //  chain :: Monad m => (a -> m b) -> m a -> m b
+      var chain = curry(function(f, m){
+        return m.map(f).join(); // 或者 compose(join, map(f))(m)
+      });
+
+`chain` 叫做 `>>=`（读作 bind）或者 `flatMap`；都是同一个概念的不同名称罢了
+
+用 `chain`重构上面两个例子
+
+      // map/join
+      var firstAddressStreet = compose(
+        join, map(safeProp('street')), join, map(safeHead), safeProp('addresses')
+      );
+
+      // chain
+      var firstAddressStreet = compose(
+        chain(safeProp('street')), chain(safeHead), safeProp('addresses')
+      );
+-------------
+
+      // map/join
+      var applyPreferences = compose(
+        join, map(setStyle('#main')), join, map(log), map(JSON.parse), getItem
+      );
+
+      // chain
+      var applyPreferences = compose(
+        chain(setStyle('#main')), chain(log), map(JSON.parse), getItem
+      );
+
+`chain`可以轻松嵌套多个作用，因此我们就能以一种纯函数的方式来表示 `序列(sequence)`和 `变量赋值(variable assignment)`
+
+      // getJSON :: Url -> Params -> Task JSON
+      // querySelector :: Selector -> IO DOM
+      
+      getJSON('/authenticate', {username: 'stale', password: 'crackers'})
+        .chain(function(user) { // 获取得到的数据再调用API获取数据。 嵌套两个getJSON
+          return getJSON('/friends', {user_id: user.id});
+      });
+      // Task([{name: 'Seimith', id: 14}, {name: 'Ric', id: 39}]);
+
+      querySelector("input.username").chain(function(uname) {
+        return querySelector("input.email").chain(function(email) {
+          return IO.of(  
+            "Welcome " + uname.value + " " + "prepare for spam at " + email.value
+          ); // 嵌套两个获取DOM操作最后再嵌套数据操作
+        });
+      });
+      // IO("Welcome Olivia prepare for spam at olivia@tremorcontrol.net");
+      
+      Maybe.of(3).chain(function(three) {
+        return Maybe.of(2).map(add(three));
+      });
+      // Maybe(5);
+      
+      Maybe.of(null).chain(safeProp('address')).chain(safeProp('street'));
+      // Maybe(null);
+      
+也可以用 `compose` 写上面的例子，但是需要几个帮助函数，而且这种风格怎么说都要通过闭包进行明确的变量赋值。相反，我们用了插入式的`chain`。
