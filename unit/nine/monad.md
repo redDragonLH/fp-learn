@@ -189,3 +189,49 @@ IO等的 `of` 方法不是用来避免使用 `new` 关键字的，而是用来�
       // Maybe(null);
       
 也可以用 `compose` 写上面的例子，但是需要几个帮助函数，而且这种风格怎么说都要通过闭包进行明确的变量赋值。相反，我们用了插入式的`chain`。
+
+`chain`可以自动从任意类型的 `map` 和`join` 衍生出来，就行这样
+
+       t.prototype.chain = function(f) { 
+         return this.map(f).join(); 
+       }
+
+如果`chain`是简单地通过结束调用 `of` 后把值放回容器这种方式定义的，那么就会造成一个有趣的后果，即可以从 `chain`那里衍生出一个`map`。同样地，我们还可以用 chain(id) 定义 join。
+
+## 理论
+结合律，不太熟悉的结合律
+
+      // 结合律
+      compose(join, map(join)) == compose(join, join)
+    
+这个定律表明了monad 的嵌套本质，所以结合律关心的是如何让内层或外层的容器类型`join`，然后取得同样的结果
+![monad结合律](https://llh911001.gitbooks.io/mostly-adequate-guide-chinese/content/images/monad_associativity.png)
+
+从左上角往下，先用 `jion` 合并 `M(M(M a))` 最外层的两个 `M`,然后往右，再调用一次 `join` ，就得到了我们想要的 `M a`。或者，从左上角往右，先打开最外围的 `M`,用 `map(join)` 合并内层的两个 `M`,然后再向下调用一次`join`，也能得到 `M a`。不管是先合并内层还是先合并外层的 `M`,最后都会得到相同的  `M a`,这就是结合律，。值得注意的是 `map(join) != join`。两种方式的中间步骤可能会有不同的值，但是最后一个`join`调用后最终结果是一样的。
+
+      //同一律
+      compose(join, of) == compose(join, map(of)) == id
+
+这表明，对任意的monad `M`,`of`和`join`相当于 `id`。也可以使`map(of)`由内而外实现相同效果。
+![三角同一律](https://llh911001.gitbooks.io/mostly-adequate-guide-chinese/content/images/triangle_identity.png)
+
+如果从左上角开始往右，可以看到`of` 的确把`M a`丢到另一个`M`容器里去了。然后再往下`join`，就得到了`M a`，跟一开始就调用 `id`的的结果一样。从右上角往左，可以看到如果我们通过 `map`进到`M`里面，然后对普通值 `a` 调用`of`，最后得到的还是`M (M a)`;再调用一次 `join`将会把我们带回原点，即`M a`
+
+尽管这里写的是 of，实际上对任意的 monad 而言，都必须要使用明确的 M.of。
+
+是范畴遵循的定律！不我们需要一个组合函数来给出一个完整定义：
+
+      var mcompose = function(f, g) {
+       return compose(chain(f), chain(g));
+      }
+
+      // 左同一律
+      mcompose(M, f) == f
+
+      // 右同一律
+      mcompose(f, M) == f
+
+      // 结合律
+      mcompose(mcompose(f, g), h) == mcompose(f, mcompose(g, h))
+
+毕竟它们是范畴学里的定律。monad 来自于一个叫 `“Kleisli 范畴”`的范畴，这个范畴里边所有的对象都是 `monad`，所有的态射都是联结函数（chained funtions）。
