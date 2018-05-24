@@ -1,6 +1,7 @@
-const {IO,Maybe,task,Either} = require( '../eight/container.js' );
+const {IO,Maybe,task,Either,getJSON} = require( '../eight/container.js' );
 const {ZROE,ONE,TOW} = require( '../../comm/number.js' );
 
+const jQuery = require( 'jquery' );
 const concat = require( 'ramda' ).concat;
 const curry = require( 'ramda' ).curry;
 const compose = require( 'ramda' ).compose;
@@ -62,5 +63,73 @@ firstAddressStreet( {
 IO.prototype.join = function(){
   return this.$value();
 };
+
+// 同样是简单地移除了一层容器。没有提及纯粹性的问题，仅仅是移除过度紧缩的包裹中的一层而已。
+
+// log :: a -> IO a
+
+let log = ( x ) => new IO( () => {
+  // console.log( x ); 
+  return x ;
+} );  //打印数据，但是放到IO里
+
+// setStyle :: selector -> CSSProps -> IO DOM
+let setStyle = curry( ( sel, props ) => new IO( () => jQuery( sel ).css( props )  ) ); //参数 dom 和 样式属性
+
+// getItem :: String -> IO String
+let getItem = ( key ) => new IO( () => localStorage.getItem( key ) ); // 获取本地储存里的 内容
+
+let applyPreferences = compose( join, map( setStyle( '#main' ) ), join, map( log ), map( JSON.parse ), getItem );
+applyPreferences( 'preferences' );
+// applyPreferences('preferences').unsafePerformIO();
+// Object {backgroundColor: "green"}
+// <div style="background-color: 'green'"/>
+
+/*
+ *
+ * chain 函数
+ *
+ * map 后面紧跟着一个 join 函数，可以把这个行为抽象到一个叫做 chain 的函数里
+ * 
+ */
+
+// chain :: Monad m => ( a -> m b) -> m a -> m b
+let chain = curry( ( f, m ) => m.map( f ).join() );  // 或者compose(join, map(f))(m)
+
+// 重构 firstAddressStreet  和 applyPreferences 
+// // map/join
+/*
+ *  var firstAddressStreet = compose(
+ *    join, map(safeProp('street')), join, map(safeHead), safeProp('addresses')
+ *  );
+*/
+//  chain
+let firstAddressStreetChain = compose(
+  chain( safeProp( 'street' ) ), chain( safeHead ), safeProp( 'addresses' ) 
+);
+  
+firstAddressStreetChain( {
+  addresses: [ { street: { name: 'Mulburry', number: 8402 }, postcode: 'WC2N' } ],
+} );
+// map/join
+/*
+ * var applyPreferences = compose(
+ *  join, map(setStyle('#main')), join, map(log), map(JSON.parse), getItem
+ * );
+*/
+let applyPreferencesChain = compose(
+  chain( setStyle( '#main' ) ), join, map( log ), map( JSON.parse ), getItem 
+);
+applyPreferencesChain( 'preferences' );
+/**
+ * 因为 chain 可以轻松地嵌套多个作用，因此我们就能以一种纯函数式的方式表示 序列 和 变量赋值
+ * 
+ */
+// getJSON :: url -> Params -> Task JSON
+// querySelector :: selector -> IO DOM
+
+getJSON( './authenticate', { username: 'stale', passWord: 'crackers'} )
+  .chain( ( user ) => getJSON( './friends', { userId: user.id } ) );
+// Task([{name: 'seimith', id: 14}, {name: 'Ric', id: 39}]);
 
 

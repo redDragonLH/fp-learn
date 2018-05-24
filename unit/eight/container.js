@@ -3,6 +3,7 @@ const {ONE,TOW,THREE,TEN,TWENTY} = require( '../../comm/number.js' );
 const {match,filter} = require( '../four/curry.js' );
 const {add,id,last,head} = require( '../five/compose.js' );
 const _ = require( 'ramda' );
+const $ = require( 'jquery' );
 const compose = require( 'ramda' ).compose;
 const curry = require( 'ramda' ).curry;
 const concat = require( 'ramda' ).concat;
@@ -274,9 +275,28 @@ let readFile = filename => task( ( reject, result ) => {
 
 readFile( 'metamorphosis' ).map( split( '\n' ) ).map( head );
 
+// jQuery getJSON example:
+//========================
+
+//  getJSON :: String -> {} -> task(Error, JSON)
+var getJSON = curry( function( url, params ) {
+  return task( function( reject, result ) {
+    $.getJSON( url, params, result ).fail( reject );
+  } );
+} );
+
+getJSON( '/video', { id: 10 } ).map( _.prop( 'title' ) );
+// task("Family Matters ep 15")
+
+// 传入普通的实际值也没问题
+task.of( THREE ).map( function( three ){ 
+  return three + ONE;
+} );
+// Task(4)
 module.exports = {
   IO,
   Maybe,
   task,
   Either,
+  getJSON,
 };
