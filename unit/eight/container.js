@@ -4,13 +4,15 @@ const {match,filter} = require( '../four/curry.js' );
 const {add,id,last,head} = require( '../five/compose.js' );
 const _ = require( 'ramda' );
 const $ = require( 'jquery' );
+
+const Handlebars = require( 'Handlebars' );
 const compose = require( 'ramda' ).compose;
 const curry = require( 'ramda' ).curry;
 const concat = require( 'ramda' ).concat;
 const prop = require( 'ramda' ).prop;
 const split = require( 'ramda' ).split;
 const eq = require( 'ramda' ).split;
-
+const sortBy = require( 'ramda' ).sortBy;
 const moment = require( 'moment' ); //日期插件
 
 const Window = require( 'window' );
@@ -293,6 +295,32 @@ task.of( THREE ).map( function( three ){
   return three + ONE;
 } );
 // Task(4)
+// Pure application
+//=====================
+// blogTemplate :: String
+let blogTemplate = 'test';
+//  blogPage :: Posts -> HTML
+var blogPage = Handlebars.compile( blogTemplate );
+
+//  renderPage :: Posts -> HTML
+var renderPage = compose( blogPage, sortBy( 'date' ) );
+
+//  blog :: Params -> Task(Error, HTML)
+var blog = compose( map( renderPage ), getJSON( '/posts' ) );
+
+
+// Impure calling code
+//=====================
+blog( { } ).fork(
+  function( error ){ 
+    $( '#error' ).html( error.message ); 
+  },
+  function( page ){ 
+    $( '#main' ).html( page ); 
+  }
+);
+
+$( '#spinner' ).show();
 module.exports = {
   IO,
   Maybe,
