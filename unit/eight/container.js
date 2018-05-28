@@ -5,6 +5,7 @@ const {add,id,last,head} = require( '../five/compose.js' );
 const _ = require( 'ramda' );
 const $ = require( 'jquery' );
 
+const Postgres = require( 'pg' );
 const Handlebars = require( 'Handlebars' );
 const compose = require( 'ramda' ).compose;
 const curry = require( 'ramda' ).curry;
@@ -291,7 +292,7 @@ getJSON( '/video', { id: 10 } ).map( _.prop( 'title' ) );
 // task("Family Matters ep 15")
 
 // 传入普通的实际值也没问题
-task.of( THREE ).map( function( three ){ 
+task( THREE ).map( function( three ){ 
   return three + ONE;
 } );
 // Task(4)
@@ -308,7 +309,6 @@ var renderPage = compose( blogPage, sortBy( 'date' ) );
 //  blog :: Params -> Task(Error, HTML)
 var blog = compose( map( renderPage ), getJSON( '/posts' ) );
 
-
 // Impure calling code
 //=====================
 blog( { } ).fork(
@@ -321,6 +321,27 @@ blog( { } ).fork(
 );
 
 $( '#spinner' ).show();
+
+// Postgres.connect :: Url -> IO DbConnection
+// runQuery :: DbConnection -> ResultSet
+// readFile :: String -> Task Error String
+
+// Pure application
+//====================
+
+//dburl :: Confing -> Either Error url
+let dbUrl = ( c ) => ( c.name && c.pass && c.host && c.bd ) ? Right.of( 'db:pg://' + c.uname + ':' + c.pass + '@' + c.host + '5432/' + c.db ) : Left.of( Error( 'invalid config' ) );
+
+// connectDB :: Config -> Either Error (IO DbConnection)
+let connectDB = compose( map( Postgres.connect ), dbUrl );
+
+// getConfig :: Filename -> Task Error (Either Error (IO DbConnection))
+let getConfig = compose( map( compose( connectDB,JSON.parse ) ) , readFile );
+
+getConfig( 'db.json' ).fork(
+  Error( 'couldn not read file' ), either( )
+);
+
 module.exports = {
   IO,
   Maybe,
