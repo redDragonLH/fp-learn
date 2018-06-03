@@ -130,11 +130,14 @@ describe( '第四章 柯里化', function(){
     } );
   } );
   describe( 'createCurry', function () {
+    function createCurryTest( a, b ){
+      return a + b;
+    }
     it( 'createCurry return function' ,function(){
-      function createCurryTest( a, b ){
-        return a + b;
-      }
-      should( createCurry( createCurryTest ) ).be.a.function;
+      should( createCurry( createCurryTest,ONE ) ).be.a.function;
+    } );
+    it( 'Curry function' ,function(){
+      should( createCurry( createCurryTest , ONE )( ONE ) ).be.a.number;
     } );
   } );
 } );

@@ -215,7 +215,7 @@ function createCurry ( fn ){
     // 收集剩余参数
     let _args = [].slice.call( arguments );
     // 返回结果
-    return fn.apply( this,args.comcat( _args ) );
+    return fn.apply( this,args.concat( _args ) );
   };
 }
 
