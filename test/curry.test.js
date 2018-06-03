@@ -22,6 +22,7 @@ let throttle = locacurry.throttle;
 let rafThrottle = locacurry.rafThrottle;
 let raFrame = locacurry.raFrame;
 let iEaddEvent = locacurry.iEaddEvent;
+let createCurry = locacurry.createCurry;
 let TIME = 10;
 let kfunction = function(){};
 describe( '第四章 柯里化', function(){
@@ -126,6 +127,14 @@ describe( '第四章 柯里化', function(){
     } );
     it( 'raFrame' ,function(){
       should( raFrame( function(){} ) ).be.a.function;
+    } );
+  } );
+  describe( 'createCurry', function () {
+    it( 'createCurry return function' ,function(){
+      function createCurryTest( a, b ){
+        return a + b;
+      }
+      should( createCurry( createCurryTest ) ).be.a.function;
     } );
   } );
 } );
