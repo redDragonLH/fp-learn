@@ -47,4 +47,7 @@ describe( '第五章 组合', function(){
   it( 'trace debug', function() {
     should( composes.trace( 'tag', ONE ) ).be.a.number;
   } );
+  it( 'id return ', function() {
+    should( composes.id( ONE ) ).be.a.number;
+  } );
 } );
