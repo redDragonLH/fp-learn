@@ -9,7 +9,7 @@ describe( '第七章', function(){
     should( HM.strLength( 'test' ) ).be.equal( FOUR );
   } );
   it( 'join', function(){
-    should( HM.join( 'test' ) ).be.function;
+    should( HM.join( 'test' , [ FOUR ] ) ).be.object;
   } );
   it( 'head', function(){
     should( HM.head( 'test' ) ).be.string;
