@@ -65,6 +65,15 @@ Container.of( TOW ).map( function( two ) {
   return two + TOW;
 } );
 
+Container.of( THREE );
+//=> Container(3)
+
+Container.of( 'hotdogs' );
+//=> Container("hotdogs")
+
+Container.of( Container.of( { name: 'yoda' } ) );
+//=> Container(Container({name: "yoda" }))
+//=> 
 /*---------------*/
 let Maybe = function ( x ) {
   this._value = x;
@@ -309,19 +318,7 @@ var renderPage = compose( blogPage, sortBy( 'date' ) );
 //  blog :: Params -> Task(Error, HTML)
 var blog = compose( map( renderPage ), getJSON( '/posts' ) );
 
-// Impure calling code
-//=====================
-blog( { } ).fork(
-  function( error ){ 
-    $( '#error' ).html( error.message ); 
-  },
-  function( page ){ 
-    $( '#main' ).html( page ); 
-  }
-);
-
-$( '#spinner' ).show();
-
+blog( { } );
 // Postgres.connect :: Url -> IO DbConnection
 // runQuery :: DbConnection -> ResultSet
 // readFile :: String -> Task Error String
@@ -338,11 +335,10 @@ let connectDB = compose( map( Postgres.connect ), dbUrl );
 // getConfig :: Filename -> Task Error (Either Error (IO DbConnection))
 let getConfig = compose( map( compose( connectDB,JSON.parse ) ) , readFile );
 
-getConfig( 'db.json' ).fork(
-  Error( 'couldn not read file' ), either( )
-);
-
+getConfig( 'db.json' );
 module.exports = {
+  inspect,
+  Container,
   IO,
   Maybe,
   task,
