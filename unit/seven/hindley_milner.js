@@ -22,10 +22,21 @@ var replace = curry( function( reg, sub, s ){
 var head = function( xs ){
   return xs[0]; 
 };
+//  id :: a -> a
+var id = function( x ){ 
+  return x; 
+};
+//  map :: (a -> b) -> [a] -> [b]
+var map = curry( function( f, xs ){
+  return xs.map( f );
+} );
+
 module.exports = {
   strLength,
   join,
   match,
   replace,
   head,
+  id,
+  map,
 };
