@@ -339,7 +339,9 @@ getConfig( 'db.json' );
 module.exports = {
   inspect,
   Container,
+  map,
   IO,
+  ioWindow,
   Maybe,
   task,
   Either,
