@@ -6,7 +6,7 @@ const _ = require( 'ramda' );
 const $ = require( 'jquery' );
 
 const Postgres = require( 'pg' );
-const Handlebars = require( 'Handlebars' );
+const Handlebars = require( 'handlebars' );
 const compose = require( 'ramda' ).compose;
 const curry = require( 'ramda' ).curry;
 const concat = require( 'ramda' ).concat;
