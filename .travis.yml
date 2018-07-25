@@ -15,5 +15,6 @@ install:
     npm install --registry http://registry.npmjs.org
 script:
   - npm run after
+  - codecov
 after_success:
   - npm run coveralls
