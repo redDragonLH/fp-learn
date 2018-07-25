@@ -1,3 +1,5 @@
+/*eslint no-global-assign: "error"*/
+/*globals localStorage:true*/
 const {IO,Maybe,task,Either,getJSON} = require( '../eight/container.js' );
 const {ZROE,ONE,TOW} = require( '../../comm/number.js' );
 
@@ -8,6 +10,23 @@ const compose = require( 'ramda' ).compose;
 const map = require( 'ramda' ).map;
 const _ = require( 'ramda' );
 const {add} = require( '../five/compose.js' );
+
+// typeof 在判断时就算变量不存在也不会报错
+// if ( typeof window === 'undefined' || window === null ) {
+//   const Window = require( 'window' );
+// 
+//   const window = new Window();
+// }
+
+if ( typeof localStorage === 'undefined' || localStorage === null ) {
+  const LocalStorage = require( 'node-localstorage' ).LocalStorage;
+  localStorage = new LocalStorage( './localStorage' );
+}
+localStorage.setItem( 'preferences', '23333' );
+
+// ----------------------------正式内容----------------------------// 
+
+
 
 IO.of( 'tetris' ).map( concat( 'master' ) );
 // IO("tetris master")
@@ -132,4 +151,6 @@ getJSON( './authenticate', { username: 'stale', passWord: 'crackers'} )
   .chain( ( user ) => getJSON( './friends', { userId: user.id } ) );
 // Task([{name: 'seimith', id: 14}, {name: 'Ric', id: 39}]);
 
-
+module.exports = {
+  localStorage,
+};
